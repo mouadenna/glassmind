@@ -1,0 +1,14 @@
+{
+  "shortcuts": {
+    "captureScreenshot": "Ctrl+Shift+S",
+    "multiPageCapture": "Ctrl+Shift+A",
+    "textInput": "Ctrl+Shift+I",
+    "openSettings": "Ctrl+P",
+    "toggleWindowVisibility": "Ctrl+Shift+W",
+    "resetSession": "Ctrl+Shift+R",
+    "quitApp": "Ctrl+Shift+Q",
+    "moveWindow": "Ctrl+ArrowKeys",
+    "centerWindow": "Ctrl+C",
+    "scrollResponse": "Ctrl+U/D"
+  }
+} 

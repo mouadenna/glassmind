@@ -1,0 +1,364 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8"/>
+  <title>LeetCoder</title>
+  <!-- Add highlight.js CSS - using the dark theme -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/styles/atom-one-dark.min.css">
+  <link rel="stylesheet" href="src/css/styles.css">
+  <style>
+    html {
+      width: 100%;
+      height: 100%;
+      background: none;
+    }
+    
+    body {
+      margin: 0; 
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      background: none;
+      font-family: 'Segoe UI', Roboto, Arial, sans-serif;
+      overflow: hidden;
+      position: relative;
+      font-size: 16px; /* Increased base font size */
+    }
+    
+    /* Improved instruction banner */
+    #instruction-banner {
+      position: fixed;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(0,0,0,0.6);
+      color: #fff;
+      padding: 12px 24px; /* Increased padding */
+      font-size: 16px; /* Increased font size */
+      border-radius: 0 0 16px 16px; /* Larger border radius */
+      z-index: 9999;
+      box-shadow: 0 2px 15px rgba(0,0,0,0.3);
+      transition: all 0.3s ease;
+      user-select: none;
+      backdrop-filter: blur(5px);
+      border: 1px solid rgba(255,255,255,0.1);
+      border-top: none;
+    }
+    
+    /* #instruction-banner:hover {  
+      background: rgba(0,0,0,0.75);
+    } */
+    
+    #response-overlay {
+      position: fixed;
+      top: 0; 
+      left: 0;
+      width: 100%;
+      height: 100%;
+      /* background: rgba(0,0,0,0.4); */
+      opacity: 0;
+      visibility: hidden;
+      transition: opacity 0.4s ease, visibility 0.4s;
+      z-index: 9998;
+      backdrop-filter: blur(3px);
+    }
+    
+    #response-overlay.visible {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    #response-box {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 95%; /* Increased width */
+      max-width: 1000px; /* Increased max width */
+      max-height: 90vh; /* Increased max height */
+      overflow-y: auto;
+      background: rgba(25,25,25,0.7);
+      color: #fff;
+      padding: 36px; /* Increased padding */
+      box-sizing: border-box;
+      font-size: 17px; /* Increased font size */
+      line-height: 1.7; /* Increased line height */
+      border-radius: 16px; /* Increased border radius */
+      box-shadow: 0 5px 30px rgba(0,0,0,0.4);
+      transition: all 0.3s ease;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+    }
+    
+    /* #response-box:hover {
+      background: rgba(25,25,25,0.85);
+    } */
+    
+    #response-box::-webkit-scrollbar {
+      width: 8px;
+    }
+    
+    #response-box::-webkit-scrollbar-track {
+      background: rgba(0,0,0,0.2);
+      border-radius: 4px;
+    }
+    
+    #response-box::-webkit-scrollbar-thumb {
+      background: rgba(255,255,255,0.3);
+      border-radius: 4px;
+    }
+    
+    /* #response-box::-webkit-scrollbar-thumb:hover {
+      background: rgba(255,255,255,0.5);
+    } */
+    
+    /* Remove the original pre and code styles and merge with highlight.js */
+    pre {
+      margin: 1em 0;
+    }
+    
+    pre code {
+      padding: 0;
+      background: none;
+      border-radius: 0;
+    }
+    
+    code:not(pre code) {
+      font-family: 'Fira Code', Consolas, 'Courier New', monospace;
+      background: rgba(60,60,60,0.7);
+      color: #fff;
+      padding: 4px 8px; /* Increased padding */
+      border-radius: 6px; /* Increased border radius */
+      font-size: 0.95em; /* Increased relative font size */
+    }
+    
+    /* Override highlight.js styles to match our theme */
+    .hljs {
+      background: rgba(40,40,40,0.7) !important;
+      padding: 20px !important; /* Increased padding */
+      border-radius: 12px !important; /* Increased border radius */
+      border: 1px solid rgba(255,255,255,0.1) !important;
+      box-shadow: 0 3px 10px rgba(0,0,0,0.2) !important;
+      font-family: 'Fira Code', Consolas, 'Courier New', monospace !important;
+      font-size: 16px !important; /* Increased font size */
+      line-height: 1.6 !important; /* Increased line height */
+    }
+    
+    #response-box p {
+      margin: 0 0 12px 0;
+    }
+    
+    #response-box p:last-child {
+      margin-bottom: 0;
+    }
+    
+    .error-message {
+      color: #ff6b6b;
+      background: rgba(255,68,68,0.1);
+      padding: 16px;
+      border-radius: 8px;
+      border-left: 4px solid #ff6b6b;
+      margin: 12px 0;
+      box-shadow: 0 2px 10px rgba(255,0,0,0.1);
+    }
+    
+    /* New styles for enhanced UI */
+    h1, h2, h3, h4, h5, h6 {
+      color: #ffffff;
+      margin-top: 28px; /* Increased margin */
+      margin-bottom: 20px; /* Increased margin */
+    }
+    
+    h1 { font-size: 28px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; } /* Increased font size */
+    h2 { font-size: 24px; } /* Increased font size */
+    h3 { font-size: 22px; } /* Increased font size */
+    
+    ul, ol {
+      padding-left: 24px;
+      margin: 12px 0;
+    }
+    
+    li {
+      margin-bottom: 6px;
+    }
+    
+    a {
+      color: #61dafb;
+      text-decoration: none;
+      transition: color 0.2s ease;
+    }
+    
+    /* a:hover {
+      color: #a0e9ff;
+      text-decoration: underline;
+    } */
+    
+    hr {
+      border: none;
+      height: 1px;
+      background: rgba(255,255,255,0.1);
+      margin: 20px 0;
+    }
+    
+    blockquote {
+      border-left: 5px solid rgba(97, 218, 251, 0.5); /* Increased border width */
+      margin: 20px 0; /* Increased margin */
+      padding: 12px 20px; /* Increased padding */
+      background: rgba(97, 218, 251, 0.05);
+      border-radius: 0 6px 6px 0; /* Increased border radius */
+    }
+    
+    table {
+      border-collapse: collapse;
+      width: 100%;
+      margin: 16px 0;
+      background: rgba(40,40,40,0.4);
+      border-radius:.75rem;
+      overflow: hidden;
+    }
+    
+    th, td {
+      border: 1px solid rgba(255,255,255,0.1);
+      padding: 10px 16px; /* Increased padding */
+      text-align: left;
+    }
+    
+    th {
+      background: rgba(60,60,60,0.6);
+    }
+    
+    tr:nth-child(even) {
+      background: rgba(50,50,50,0.4);
+    }
+    
+    /* Fade edges for response box */
+    #response-box::after {
+      content: '';
+      position: sticky;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      height: 40px;
+      background: linear-gradient(to top, rgba(25,25,25,0.7), transparent);
+      pointer-events: none;
+    }
+    
+    /* Keyboard shortcut styling */
+    .kbd {
+      display: inline-block;
+      background: rgba(80,80,80,0.7);
+      color: #fff;
+      border-radius: 5px; /* Increased border radius */
+      border: 1px solid rgba(255,255,255,0.2);
+      padding: 3px 8px; /* Increased padding */
+      font-family: sans-serif;
+      font-size: 0.9em; /* Increased relative font size */
+      box-shadow: 0 2px 0 rgba(0,0,0,0.2);
+      margin: 0 2px;
+    }
+    
+    /* Response type indicators */
+    .response-type {
+      display: inline-block;
+      padding: 4px 10px; /* Increased padding */
+      border-radius: 14px; /* Increased border radius */
+      font-size: 0.85em; /* Increased relative font size */
+      margin-right: 10px; /* Increased margin */
+      background: rgba(97,218,251,0.2);
+      color: #61dafb;
+      vertical-align: middle;
+    }
+    
+    .response-warning {
+      background: rgba(255,193,7,0.2);
+      color: #ffc107;
+    }
+    
+    .response-error {
+      background: rgba(255,107,107,0.2);
+      color: #ff6b6b;
+    }
+
+    /* New styles for text input overlay */
+    #text-input-overlay {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: rgba(25,25,25,0.9);
+      padding: 20px;
+      border-radius: 12px;
+      box-shadow: 0 5px 30px rgba(0,0,0,0.4);
+      display: none;
+      z-index: 10000;
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(255,255,255,0.1);
+      width: 80%;
+      max-width: 1200px;
+      justify-content: center;
+      align-items: center;
+    }
+
+    #text-input {
+      width: 95%;
+      max-width: 1000px;
+      margin-left: auto;
+      margin-right: auto;
+      background: rgba(40,40,40,0.7);
+      border: 1px solid rgba(255,255,255,0.2);
+      color: #fff;
+      padding: 12px;
+      border-radius: 6px;
+      font-size: 16px;
+      font-family: inherit;
+      resize: none;
+      outline: none;
+      margin-bottom: 10px;
+    }
+
+    #text-input:focus {
+      border-color: #61dafb;
+    }
+
+    .text-input-buttons {
+      display: flex;
+      justify-content: flex-end;
+      gap: 10px;
+    }
+
+    .text-input-button {
+      background: rgba(97,218,251,0.2);
+      color: #61dafb;
+      border: 1px solid rgba(97,218,251,0.3);
+      padding: 8px 16px;
+      border-radius: 6px;
+      cursor: pointer;
+      font-size: 14px;
+      transition: all 0.2s ease;
+    }
+
+  </style>
+</head>
+<body>
+  <div id="instruction-banner"></div>
+  <div id="response-overlay">
+    <div id="response-box"></div>
+  </div>
+  <div id="text-input-overlay">
+    <textarea id="text-input" rows="3" placeholder="Type your message here..."></textarea>
+  </div>
+
+  <!-- Libraries -->
+  <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+  <!-- Add highlight.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/highlight.min.js"></script>
+  <!-- Common programming languages -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/python.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/javascript.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/java.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.9.0/languages/cpp.min.js"></script>
+  
+  <!-- Application scripts -->
+  <script src="src/js/ui/renderer.js"></script>
+</body>
+</html>

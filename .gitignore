@@ -1,0 +1,29 @@
+# Node modules
+node_modules/
+package-lock.json
+
+# Build directories
+dist/
+build/
+
+# Log files
+logs/
+*.log
+
+# Environment files
+.env
+.env.local
+
+# Configuration file (should be private)
+config.json
+
+# Operating system files
+.DS_Store
+Thumbs.db
+
+# Editor directories
+.idea/
+.vscode/
+
+# Other
+screenshots/
