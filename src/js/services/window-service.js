@@ -23,16 +23,14 @@ class WindowService {
   createMainWindow() {
     logger.info("Creating main window");
     
-    // Calculate horizontal center position for top-middle placement
-    const { width: screenWidth } = screen.getPrimaryDisplay().workAreaSize;
-    const windowWidth = 800;
-    const posX = Math.floor((screenWidth - windowWidth) / 2);
+    // Get the screen size for full screen window
+    const { width: screenWidth, height: screenHeight } = screen.getPrimaryDisplay().workAreaSize;
     
     this.mainWindow = new BrowserWindow({
-      x: posX*(1-0.2),
+      x: 0,
       y: 0,
-      width: 900,
-      height: 600,
+      width: screenWidth,
+      height: screenHeight,
       webPreferences: {
         nodeIntegration: true,
         contextIsolation: false
@@ -51,7 +49,7 @@ class WindowService {
     // Set initial state to ignore mouse events
     this.mainWindow.setIgnoreMouseEvents(true, { forward: true });
 
-    logger.info("Main window created and configured");
+    logger.info("Main window created and configured with full screen size");
     
     return this.mainWindow;
   }

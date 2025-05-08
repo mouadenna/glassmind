@@ -115,22 +115,22 @@ class ShortcutService {
       this.appController.quitApplication();
     });
 
-    // Move window shortcuts
-    globalShortcut.register('CommandOrControl+Left', () => {
-      this.appController.moveWindow('left');
-    });
+    // Move window shortcuts - REMOVED to let only the response overlay move with Ctrl+Arrow keys
+    // globalShortcut.register('CommandOrControl+Left', () => {
+    //   this.appController.moveWindow('left');
+    // });
 
-    globalShortcut.register('CommandOrControl+Right', () => {
-      this.appController.moveWindow('right');
-    });
+    // globalShortcut.register('CommandOrControl+Right', () => {
+    //   this.appController.moveWindow('right');
+    // });
 
-    globalShortcut.register('CommandOrControl+Up', () => {
-      this.appController.moveWindow('up');
-    });
+    // globalShortcut.register('CommandOrControl+Up', () => {
+    //   this.appController.moveWindow('up');
+    // });
 
-    globalShortcut.register('CommandOrControl+Down', () => {
-      this.appController.moveWindow('down');
-    });
+    // globalShortcut.register('CommandOrControl+Down', () => {
+    //   this.appController.moveWindow('down');
+    // });
 
     // Center window shortcut
     this.registerShortcut(this.shortcuts.centerWindow, () => {

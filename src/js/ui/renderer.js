@@ -16,10 +16,30 @@ marked.setOptions({
 });
 
 /**
+ * Centers the response box in the viewport
+ */
+const centerResponseBox = () => {
+  const responseBox = document.getElementById('response-box');
+  
+  // Reset position tracking attributes
+  responseBox.setAttribute('data-x-offset', '0');
+  responseBox.setAttribute('data-y-offset', '0');
+  
+  // Reset the positioning of the response box
+  responseBox.style.top = '50%';
+  responseBox.style.left = '50%';
+  responseBox.style.transform = 'translate(-50%, -50%)';
+};
+
+/**
  * Shows the response overlay
  */
 const showOverlay = () => {
   const overlay = document.getElementById('response-overlay');
+  
+  // Center the response box when showing the overlay
+  centerResponseBox();
+  
   overlay.classList.add('visible');
 };
 
@@ -216,6 +236,64 @@ const setupEventListeners = () => {
       sendTextInput();
     } else if (e.key === 'Escape') {
       hideTextInput();
+    }
+  });
+
+  // Add keyboard event listener for moving response overlay with Ctrl+Arrow keys
+  document.addEventListener('keydown', (e) => {
+    const overlay = document.getElementById('response-overlay');
+    const responseBox = document.getElementById('response-box');
+    
+    // Only handle if the overlay is visible
+    if (overlay.classList.contains('visible') && (e.ctrlKey || e.metaKey)) {
+      // Center on Ctrl+C
+      if (e.key === 'c' || e.key === 'C') {
+        e.preventDefault();
+        centerResponseBox();
+        return;
+      }
+      
+      const step = 50; // Same step size as the original moveWindow function
+      
+      // Initialize position tracking if not present
+      if (!responseBox.hasAttribute('data-x-offset')) {
+        responseBox.setAttribute('data-x-offset', '0');
+        responseBox.setAttribute('data-y-offset', '0');
+      }
+      
+      // Get current offsets
+      let xOffset = parseInt(responseBox.getAttribute('data-x-offset')) || 0;
+      let yOffset = parseInt(responseBox.getAttribute('data-y-offset')) || 0;
+      
+      // Update offsets based on arrow key
+      switch (e.key) {
+        case 'ArrowLeft':
+          e.preventDefault();
+          xOffset -= step;
+          break;
+        case 'ArrowRight':
+          e.preventDefault();
+          xOffset += step;
+          break;
+        case 'ArrowUp':
+          e.preventDefault();
+          yOffset -= step;
+          break;
+        case 'ArrowDown':
+          e.preventDefault();
+          yOffset += step;
+          break;
+        default:
+          return; // Exit if not a handled key
+      }
+      
+      // Save new offsets
+      responseBox.setAttribute('data-x-offset', xOffset.toString());
+      responseBox.setAttribute('data-y-offset', yOffset.toString());
+      
+      // Apply new position directly to the response box
+      responseBox.style.top = `calc(50% + ${yOffset}px)`;
+      responseBox.style.left = `calc(50% + ${xOffset}px)`;
     }
   });
 };
