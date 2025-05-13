@@ -2,6 +2,7 @@ const fs = require('fs');
 const path = require('path');
 const { spawn } = require('child_process');
 
+
 // Check if config.json exists
 const configPath = path.join(__dirname, 'config.json');
 const templatePath = path.join(__dirname, 'config.template.json');
